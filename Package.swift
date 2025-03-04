@@ -4,7 +4,8 @@ import PackageDescription
 let package = Package(
     name: "Solaris-Vapor",
     platforms: [
-       .macOS(.v13)
+       .macOS(.v14),
+       .iOS(.v15)
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.

@@ -1,7 +1,11 @@
 import Fluent
 import Vapor
+import NIOConcurrencyHelpers  // ✅ Import for thread-safe handling
 
 func routes(_ app: Application) throws {
+    try app.register(collection: CryptoController())
+    try app.register(collection: WebSocketsController())
+
     app.get { req async throws in
         try await req.view.render("index", ["title": "Hello Vapor!"])
     }
@@ -9,6 +13,4 @@ func routes(_ app: Application) throws {
     app.get("hello") { req async -> String in
         "Hello, world!"
     }
-
-    try app.register(collection: TodoController())
 }
