@@ -22,7 +22,19 @@ public func configure(_ app: Application) async throws {
 
     app.views.use(.leaf)
 
-
+    app.middleware.use(ErrorMiddleware.customMiddleware())
     // register routes
     try routes(app)
+}
+
+/// ✅ Custom error middleware to format errors consistently
+extension ErrorMiddleware {
+    static func customMiddleware() -> ErrorMiddleware {
+        return ErrorMiddleware { req, error in
+            let response = APIErrorResponse(error.localizedDescription)
+            let res = Response(status: .internalServerError)
+            try? res.content.encode(response)
+            return res
+        }
+    }
 }

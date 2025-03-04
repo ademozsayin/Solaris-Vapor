@@ -11,18 +11,24 @@ import Vapor
 struct CryptoController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let crypto = routes.grouped("api")
-        crypto.get("gainers", use: { req async throws -> [CryptoStats] in
-          try await self.fetchTopGainers(req: req)
-        })
+     
+        // ✅ Use an explicit `async throws` closure to satisfy `@Sendable`
+         crypto.get("gainers") { req async throws -> APIResponse<[CryptoStats]> in
+             try await self.fetchTopGainers(req: req)
+         }
     }
+    
+    /// Fetches top 5 gainers from Binance API with a success response
+    func fetchTopGainers(req: Request) async throws -> APIResponse<[CryptoStats]> {
+        do {
+            let topGainers = try await BinanceService.fetchTopGainers(client: req.client)
 
-    /// Fetches top 5 gainers from Binance API
-    func fetchTopGainers(req: Request) async throws -> [CryptoStats] {
-        let topGainers = try await BinanceService.fetchTopGainers(client: req.client)
+            // ✅ Return a success response with data
+            return APIResponse(success: true, message: "Top gainers retrieved successfully", data: topGainers)
 
-        // ✅ Move WebSocket subscription to BinanceService
-        await BinanceService.subscribeToGainerWebSockets(topGainers: topGainers, app: req.application)
-
-        return topGainers
+        } catch {
+            // ✅ Return an error response
+            throw Abort(.internalServerError, reason: "Failed to fetch gainers: \(error.localizedDescription)")
+        }
     }
 }
