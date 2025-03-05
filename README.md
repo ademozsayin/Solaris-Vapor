@@ -8,7 +8,7 @@ This is a **Vapor backend** that provides:
 - **WebSocket API** to receive real-time Binance price updates.
 - **Concurrency-safe WebSocket handling** to prevent duplicate subscriptions.
 
-## 🏗️ Project Structure
+## 🏠 Project Structure
 ```
 Sources/
 └── App/
@@ -82,6 +82,16 @@ ws://127.0.0.1:8080/binance?type=ticker&symbol=BTCUSDT
 }
 ```
 
+#### **🔹 Fetch USDT Trading Pairs**
+| Query | Description |
+|--------|------------|
+| `GET /api/usdtPairs` | **Returns all USDT pairs** |
+| `GET /api/usdtPairs?count=10` | **Returns first 10 USDT pairs** |
+| `GET /api/usdtPairs?gainers=true&count=5` | **Returns top 5 gainers (sorted by highest price change)** |
+| `GET /api/usdtPairs?losers=true&count=5` | **Returns top 5 losers (sorted by lowest price change)** |
+| `GET /api/usdtPairs?gainers=true&count=5&desc=true` | **Returns top 5 gainers sorted in reverse order** |
+| `GET /api/usdtPairs?count=10&desc=true` | **Returns first 10 coins sorted alphabetically (Z→A)** |
+
 ## 🛠 Features & Improvements
 - **Prevents duplicate Binance WebSocket subscriptions** using `ActiveWebSocketSubscriptions`.
 - **Efficiently broadcasts updates** to all active WebSocket clients.
@@ -92,12 +102,11 @@ ws://127.0.0.1:8080/binance?type=ticker&symbol=BTCUSDT
 1. Fork the repo 🍴
 2. Create a new branch: `git checkout -b feature-branch` 🌿
 3. Commit your changes: `git commit -m 'Add new feature 🚀'`
-4. Push to branch: `git push origin feature-branch` 📤
+4. Push to branch: `git push origin feature-branch` 👄
 5. Submit a PR 🎉
 
-## 📜 License
+## 🐝 License
 This project is licensed under **MIT License**.
 
 ---
 🚀 **Built with Vapor & Swift for real-time Binance trading updates!** 🔥
-

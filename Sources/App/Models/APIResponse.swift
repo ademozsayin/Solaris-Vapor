@@ -22,12 +22,25 @@ struct APIResponse<T: Content>: Content {
 }
 
 /// ✅ Generic error response model
+/// ✅ Standardized error response for API errors
 struct APIErrorResponse: Content {
     let success: Bool
-    let error: String
+    let code: Int
+    let message: String
 
-    init(_ error: String) {
+    /// ✅ Initialize with a specific error code & message
+    init(code: HTTPResponseStatus, message: String) {
         self.success = false
-        self.error = error
+        self.code = Int(code.code) // Automatically get status code
+        self.message = message
+    }
+
+    /// ✅ Automatically converts `AbortError` to `APIErrorResponse`
+    static func fromError(_ error: Error) -> APIErrorResponse {
+        if let abortError = error as? AbortError {
+            return APIErrorResponse(code: abortError.status, message: abortError.reason)
+        } else {
+            return APIErrorResponse(code: .internalServerError, message: "An unexpected error occurred.")
+        }
     }
 }

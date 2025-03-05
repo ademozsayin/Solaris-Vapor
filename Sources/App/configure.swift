@@ -28,11 +28,24 @@ public func configure(_ app: Application) async throws {
 }
 
 /// ✅ Custom error middleware to format errors consistently
+import Vapor
+
 extension ErrorMiddleware {
     static func customMiddleware() -> ErrorMiddleware {
         return ErrorMiddleware { req, error in
-            let response = APIErrorResponse(error.localizedDescription)
-            let res = Response(status: .internalServerError)
+            // ✅ Get the appropriate status code from the error (default to 500)
+            let status: HTTPResponseStatus
+            if let abortError = error as? AbortError {
+                status = abortError.status
+            } else {
+                status = .internalServerError
+            }
+
+            // ✅ Create a generic API error response
+            let response = APIErrorResponse(code: status, message: error.localizedDescription)
+
+            // ✅ Encode and return response with the correct status
+            let res = Response(status: status)
             try? res.content.encode(response)
             return res
         }

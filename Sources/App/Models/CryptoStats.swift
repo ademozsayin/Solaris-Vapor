@@ -12,8 +12,8 @@ struct CryptoStats: Content {
     let lastPrice: String
     let priceChangePercent: String
     
+    /// ✅ Generates the logo URL dynamically
     var imageUrl: String {
-        let baseCoin = String(symbol.prefix(while: { $0.isLetter }))
-        return "https://cryptoicon-api.vercel.app/api/icon/\(baseCoin.lowercased())"
+        return "https://cryptologos.cc/logos/\(symbol.lowercased())-\(symbol.lowercased())-logo.png"
     }
 }
