@@ -123,7 +123,8 @@ struct BinanceService {
             CryptoStats(
                 symbol: pair.symbol,
                 lastPrice: pair.lastPrice,
-                priceChangePercent: pair.priceChangePercent
+                priceChangePercent: pair.priceChangePercent,
+                imageUrl: CryptoStats.generateImageURL(for: pair.symbol)
             )
         }
 
