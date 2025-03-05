@@ -92,22 +92,24 @@ struct BinanceService {
 
         // ✅ Get query parameters safely
         let count = req.query["count"].flatMap { Int($0) } ?? nil // Number of items
-        let gainers = req.query["gainers"].flatMap { Bool($0) } ?? false // Sort by price change
-        let losers = req.query["losers"].flatMap { Bool($0) } ?? false // Sort in descending order
+        let gainers = req.query["gainers"].flatMap { Bool($0) } ?? false // Sort by price change (biggest gainers)
+        let losers = req.query["losers"].flatMap { Bool($0) } ?? false // Sort by price drop (biggest losers)
         let descending = req.query["desc"].flatMap { Bool($0) } ?? false // Sort alphabetically or numerically
 
         // ✅ Sorting Logic: Gainers / Losers
         if gainers {
+            // ✅ Sort gainers from **highest to lowest**
             usdtPairs.sort {
                 let first = Double($0.priceChangePercent) ?? 0
                 let second = Double($1.priceChangePercent) ?? 0
-                return descending ? (first > second) : (first < second)
+                return descending ? (first < second) : (first > second) // ✅ FIXED ORDER
             }
         } else if losers {
+            // ✅ Sort losers from **lowest to highest**
             usdtPairs.sort {
                 let first = Double($0.priceChangePercent) ?? 0
                 let second = Double($1.priceChangePercent) ?? 0
-                return descending ? (first < second) : (first > second)
+                return descending ? (first > second) : (first < second) // ✅ FIXED ORDER
             }
         } else if descending {
             usdtPairs.sort { $0.symbol > $1.symbol } // Default sorting alphabetically (Z→A)
